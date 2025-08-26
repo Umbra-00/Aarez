@@ -1,0 +1,67 @@
+/* Lightweight CSS light rays effect */
+.lr {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  /* defaults (can be overridden via inline CSS variables) */
+  --lr-color: 255, 255, 255;
+  --lr-duration: 40s;
+  --lr-spread: 1;
+  --lr-intensity: 1.2;
+  --lr-origin-x: 50%;
+  --lr-origin-y: 0%;
+  /* beam shape */
+  --lr-rays-alpha: 0.28; /* opacity of beams */
+  --lr-rays-width: 7deg; /* angular width of each beam */
+  --lr-rays-gap: 14deg;  /* angular distance until next beam */
+}
+
+.lr__layer {
+  position: absolute;
+  inset: -20%;
+  transform-origin: var(--lr-origin-x) var(--lr-origin-y);
+  filter: blur(calc(60px * var(--lr-spread)));
+  opacity: calc(0.5 * var(--lr-intensity));
+  background:
+    /* soft bloom */
+    radial-gradient(
+      circle at var(--lr-origin-x) var(--lr-origin-y),
+      rgba(var(--lr-color), 0.6) 0%,
+      rgba(var(--lr-color), 0.35) 25%,
+      rgba(var(--lr-color), 0.0) 70%
+    ),
+    /* ray beams */
+    repeating-conic-gradient(
+      from 0deg at var(--lr-origin-x) var(--lr-origin-y),
+      rgba(var(--lr-color), 0.0) 0deg,
+      rgba(var(--lr-color), var(--lr-rays-alpha)) var(--lr-rays-width),
+      rgba(var(--lr-color), 0.0) calc(var(--lr-rays-width) + var(--lr-rays-gap))
+    );
+  will-change: transform, opacity;
+}
+
+/* Three layers with differing speeds/angles to create parallax-like motion */
+.lr__layer--a {
+  animation: lr-rotate var(--lr-duration) linear infinite;
+}
+.lr__layer--b {
+  opacity: calc(0.35 * var(--lr-intensity));
+  animation: lr-rotate var(--lr-duration) linear infinite reverse;
+}
+.lr__layer--c {
+  opacity: calc(0.25 * var(--lr-intensity));
+  animation: lr-rotate calc(var(--lr-duration) * 1.6) linear infinite;
+}
+
+@keyframes lr-rotate {
+  from {
+    transform: rotate(0deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(8deg) scale(1.06);
+  }
+  to {
+    transform: rotate(16deg) scale(1.05);
+  }
+}
