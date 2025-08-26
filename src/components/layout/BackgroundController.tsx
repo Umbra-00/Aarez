@@ -48,7 +48,7 @@ const BackgroundController: React.FC = () => {
       if (hero) {
         ScrollTrigger.create({
           trigger: hero,
-          start: 'top top',
+          start: 'top bottom',
           end: 'bottom top',
           onToggle: (self) => {
             const dur = prefersReduced ? 0 : 0.25
